@@ -18,6 +18,7 @@ import FocusMode from './components/FocusMode'
 import CardMode from './components/CardMode'
 import LoginPage from './components/LoginPage'
 import { ViewMode, ThemeType } from './types'
+import { exportCurrentFileAsHtml, exportCurrentFileAsPdf } from './utils/exportActions'
 import './styles/themes/fluid-ink.css'
 
 // 创建 MUI 主题 - 与 CSS 变量同步
@@ -165,6 +166,22 @@ function AppContent() {
       setZoom(1)
     })
 
+    window.electron?.onExportPDF(() => {
+      exportCurrentFileAsPdf({ file: currentFile, themeType }).then((result) => {
+        if (!result.ok && result.message !== '已取消导出') {
+          alert(result.message)
+        }
+      })
+    })
+
+    window.electron?.onExportHTML(() => {
+      exportCurrentFileAsHtml({ file: currentFile, themeType }).then((result) => {
+        if (!result.ok && result.message !== '已取消导出') {
+          alert(result.message)
+        }
+      })
+    })
+
     return () => {
       window.electron?.removeAllListeners('file:opened')
       window.electron?.removeAllListeners('folder:opened')
@@ -174,8 +191,10 @@ function AppContent() {
       window.electron?.removeAllListeners('zoom:in')
       window.electron?.removeAllListeners('zoom:out')
       window.electron?.removeAllListeners('zoom:reset')
+      window.electron?.removeAllListeners('export:pdf')
+      window.electron?.removeAllListeners('export:html')
     }
-  }, [])
+  }, [currentFile, themeType])
 
   // 处理文件拖拽
   useEffect(() => {

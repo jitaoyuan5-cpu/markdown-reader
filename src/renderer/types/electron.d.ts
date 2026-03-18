@@ -8,6 +8,10 @@ export interface IElectronAPI {
   showOpenDialog: () => Promise<{ canceled: boolean; filePaths: string[] }>
   showOpenFolderDialog: () => Promise<{ canceled: boolean; filePaths: string[] }>
   showSaveDialog: (options: any) => Promise<{ canceled: boolean; filePath?: string }>
+  exportPdf: (payload: { html: string; suggestedFileName: string }) => Promise<{
+    canceled: boolean
+    filePath?: string
+  }>
 
   // 存储
   storeGet: (key: string, defaultValue?: any) => Promise<any>

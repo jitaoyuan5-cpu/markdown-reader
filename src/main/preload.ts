@@ -11,6 +11,8 @@ contextBridge.exposeInMainWorld('electron', {
   showOpenDialog: () => ipcRenderer.invoke('dialog:openFile'),
   showOpenFolderDialog: () => ipcRenderer.invoke('dialog:openFolder'),
   showSaveDialog: (options: any) => ipcRenderer.invoke('dialog:save', options),
+  exportPdf: (payload: { html: string; suggestedFileName: string }) =>
+    ipcRenderer.invoke('export:pdf:save', payload),
 
   // 存储
   storeGet: (key: string, defaultValue?: any) => ipcRenderer.invoke('store:get', key, defaultValue),

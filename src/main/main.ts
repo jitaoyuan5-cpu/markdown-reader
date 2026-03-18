@@ -439,6 +439,45 @@ class FlowMarkApp {
       return result
     })
 
+    ipcMain.handle(
+      'export:pdf:save',
+      async (_, payload: { html: string; suggestedFileName: string }) => {
+        const saveResult = await dialog.showSaveDialog(this.mainWindow!, {
+          title: '导出为 PDF',
+          defaultPath: payload.suggestedFileName,
+          filters: [{ name: 'PDF 文件', extensions: ['pdf'] }],
+        })
+
+        if (saveResult.canceled || !saveResult.filePath) {
+          return { canceled: true }
+        }
+
+        const printWindow = new BrowserWindow({
+          show: false,
+          webPreferences: {
+            nodeIntegration: false,
+            contextIsolation: true,
+          },
+        })
+
+        try {
+          await printWindow.loadURL(
+            `data:text/html;charset=utf-8,${encodeURIComponent(payload.html)}`,
+          )
+          const pdfData = await printWindow.webContents.printToPDF({
+            printBackground: true,
+            preferCSSPageSize: true,
+          })
+          await fs.promises.writeFile(saveResult.filePath, pdfData)
+          return { canceled: false, filePath: saveResult.filePath }
+        } finally {
+          if (!printWindow.isDestroyed()) {
+            printWindow.destroy()
+          }
+        }
+      },
+    )
+
     // 处理拖拽文件
     ipcMain.on('files:dropped', (_, files: string[]) => {
       this.handleDroppedFiles(files)

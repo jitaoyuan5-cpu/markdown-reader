@@ -32,10 +32,14 @@ import {
   Dashboard,
   Close,
   Logout,
+  FileDownload,
+  PictureAsPdf,
+  Html,
 } from '@mui/icons-material'
 import { useAppContext } from '../context/AppContext'
 import { ThemeType, ViewMode } from '../types'
 import { useAuthContext } from '../context/AuthContext'
+import { exportCurrentFileAsHtml, exportCurrentFileAsPdf } from '../utils/exportActions'
 
 export default function Header() {
   const { user, logout } = useAuthContext()
@@ -60,6 +64,7 @@ export default function Header() {
   } = useAppContext()
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
+  const [exportAnchorEl, setExportAnchorEl] = useState<null | HTMLElement>(null)
   const [searchOpen, setSearchOpen] = useState(false)
 
   const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
@@ -73,6 +78,30 @@ export default function Header() {
   const handleThemeChange = (theme: ThemeType) => {
     setThemeType(theme)
     handleMenuClose()
+  }
+
+  const handleExportMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
+    setExportAnchorEl(event.currentTarget)
+  }
+
+  const handleExportMenuClose = () => {
+    setExportAnchorEl(null)
+  }
+
+  const handleExportPdf = async () => {
+    handleExportMenuClose()
+    const result = await exportCurrentFileAsPdf({ file: currentFile, themeType })
+    if (!result.ok && result.message !== '已取消导出') {
+      alert(result.message)
+    }
+  }
+
+  const handleExportHtml = async () => {
+    handleExportMenuClose()
+    const result = await exportCurrentFileAsHtml({ file: currentFile, themeType })
+    if (!result.ok && result.message !== '已取消导出') {
+      alert(result.message)
+    }
   }
 
   const getThemeIcon = () => {
@@ -134,6 +163,29 @@ export default function Header() {
             >
               打开文件夹
             </Button>
+            <Button
+              size="small"
+              startIcon={<FileDownload />}
+              onClick={handleExportMenuOpen}
+              sx={{ textTransform: 'none' }}
+              disabled={!currentFile}
+            >
+              导出
+            </Button>
+            <Menu
+              anchorEl={exportAnchorEl}
+              open={Boolean(exportAnchorEl)}
+              onClose={handleExportMenuClose}
+            >
+              <MenuItem onClick={handleExportPdf}>
+                <PictureAsPdf fontSize="small" style={{ marginRight: 8 }} />
+                导出为 PDF
+              </MenuItem>
+              <MenuItem onClick={handleExportHtml}>
+                <Html fontSize="small" style={{ marginRight: 8 }} />
+                导出为 HTML
+              </MenuItem>
+            </Menu>
 
             {currentFile && (
               <Typography variant="body2" sx={{ ml: 2, color: 'text.secondary' }} noWrap>
