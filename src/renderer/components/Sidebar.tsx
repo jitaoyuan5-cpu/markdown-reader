@@ -23,9 +23,11 @@ import {
   Bookmark as BookmarkIcon,
   AutoStories,
   DeleteOutline,
+  Analytics,
 } from '@mui/icons-material'
 import { useAppContext } from '../context/AppContext'
 import { OutlineItem, Bookmark } from '../types'
+import { getReadingStats, runBasicGrammarCheck, validateMarkdownLinks } from '../utils/intelligentAssist'
 
 interface OutlineTreeProps {
   items: OutlineItem[]
@@ -155,8 +157,18 @@ export default function Sidebar() {
     removeRecentFile,
   } = useAppContext()
 
-  const [activeTab, setActiveTab] = React.useState<'outline' | 'bookmarks' | 'files'>('outline')
+  const [activeTab, setActiveTab] = React.useState<'outline' | 'bookmarks' | 'files' | 'assistant'>('outline')
   const [filesExpanded, setFilesExpanded] = React.useState(true)
+  const assistReport = React.useMemo(() => {
+    if (!currentFile) {
+      return null
+    }
+
+    const stats = getReadingStats(currentFile.content)
+    const grammarIssues = runBasicGrammarCheck(currentFile.content)
+    const linkIssues = validateMarkdownLinks(currentFile.content)
+    return { stats, grammarIssues, linkIssues }
+  }, [currentFile])
 
   const handleOutlineClick = (id: string) => {
     const element = document.getElementById(id)
@@ -242,6 +254,17 @@ export default function Sidebar() {
           }}
         >
           <Folder fontSize="small" />
+        </IconButton>
+        <IconButton
+          size="small"
+          onClick={() => setActiveTab('assistant')}
+          sx={{
+            flex: 1,
+            borderRadius: 0,
+            bgcolor: activeTab === 'assistant' ? 'action.selected' : 'transparent',
+          }}
+        >
+          <Analytics fontSize="small" />
         </IconButton>
       </Box>
 
@@ -348,6 +371,91 @@ export default function Sidebar() {
                 )}
               </List>
             </Collapse>
+          </>
+        )}
+
+        {activeTab === 'assistant' && (
+          <>
+            <Typography variant="subtitle2" sx={{ px: 2, py: 1, fontWeight: 600 }}>
+              智能辅助
+            </Typography>
+            {!assistReport ? (
+              <Typography
+                variant="body2"
+                color="text.secondary"
+                sx={{ px: 2, py: 2, textAlign: 'center' }}
+              >
+                打开文件查看统计与检查结果
+              </Typography>
+            ) : (
+              <Box sx={{ px: 1 }}>
+                <Box sx={{ p: 1.5, borderRadius: 1.5, bgcolor: 'action.hover', mb: 1.5 }}>
+                  <Typography variant="body2" sx={{ fontWeight: 600, mb: 1 }}>
+                    阅读统计
+                  </Typography>
+                  <Typography variant="caption" display="block">
+                    字数：{assistReport.stats.wordCount}
+                  </Typography>
+                  <Typography variant="caption" display="block">
+                    字符数：{assistReport.stats.characterCount}
+                  </Typography>
+                  <Typography variant="caption" display="block">
+                    阅读时长：约 {assistReport.stats.estimatedMinutes} 分钟
+                  </Typography>
+                  <Typography variant="caption" display="block">
+                    难度评级：{assistReport.stats.difficulty}
+                  </Typography>
+                </Box>
+
+                <Divider sx={{ my: 1 }} />
+
+                <Typography variant="body2" sx={{ fontWeight: 600, px: 1, pb: 1 }}>
+                  语法检查（{assistReport.grammarIssues.length}）
+                </Typography>
+                {assistReport.grammarIssues.length === 0 ? (
+                  <Typography variant="caption" color="text.secondary" sx={{ px: 1 }}>
+                    未发现明显问题
+                  </Typography>
+                ) : (
+                  <List dense disablePadding>
+                    {assistReport.grammarIssues.slice(0, 20).map((issue, idx) => (
+                      <ListItem key={`${issue.type}-${issue.line}-${idx}`} sx={{ py: 0.4 }}>
+                        <ListItemText
+                          primary={`L${issue.line} · ${issue.message}`}
+                          secondary={issue.suggestion || issue.fragment}
+                          primaryTypographyProps={{ variant: 'caption', fontWeight: 500 }}
+                          secondaryTypographyProps={{ variant: 'caption' }}
+                        />
+                      </ListItem>
+                    ))}
+                  </List>
+                )}
+
+                <Divider sx={{ my: 1 }} />
+
+                <Typography variant="body2" sx={{ fontWeight: 600, px: 1, pb: 1 }}>
+                  链接校验（{assistReport.linkIssues.length}）
+                </Typography>
+                {assistReport.linkIssues.length === 0 ? (
+                  <Typography variant="caption" color="text.secondary" sx={{ px: 1 }}>
+                    未发现明显问题
+                  </Typography>
+                ) : (
+                  <List dense disablePadding>
+                    {assistReport.linkIssues.slice(0, 20).map((issue, idx) => (
+                      <ListItem key={`${issue.type}-${issue.line}-${idx}`} sx={{ py: 0.4 }}>
+                        <ListItemText
+                          primary={`L${issue.line} · ${issue.message}`}
+                          secondary={issue.fragment}
+                          primaryTypographyProps={{ variant: 'caption', fontWeight: 500 }}
+                          secondaryTypographyProps={{ variant: 'caption' }}
+                        />
+                      </ListItem>
+                    ))}
+                  </List>
+                )}
+              </Box>
+            )}
           </>
         )}
       </Box>
