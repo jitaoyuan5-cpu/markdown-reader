@@ -1,0 +1,118 @@
+{
+  "name": "flowmark-reader",
+  "version": "1.0.0",
+  "description": "沉浸式 Markdown 阅读与知识管理工具",
+  "main": "dist/main.js",
+  "scripts": {
+    "dev": "concurrently \"npm run build:main:dev\" \"npm run dev:renderer\" \"wait-on dist/main.js && node \"%INIT_CWD%\\scripts\\run-electron.js\"\"",
+    "dev:server": "npm --prefix server run dev",
+    "test:server": "npm --prefix server test",
+    "test:server:smoke": "npm --prefix server run test:smoke",
+    "verify:auth-sync": "npm run test:server && npm run build",
+    "test:renderer": "vitest run --config vitest.config.ts",
+    "test:ui-auth": "npm run test:renderer -- LoginPage.test.tsx",
+    "build:main:dev": "tsc --project \"%INIT_CWD%\\tsconfig.main.json\" --watch",
+    "build:main": "tsc --project \"%INIT_CWD%\\tsconfig.main.json\"",
+    "dev:renderer": "vite",
+    "build": "npm run build:main && vite build",
+    "electron": "node \"%INIT_CWD%\\scripts\\run-electron.js\"",
+    "package": "electron-builder"
+  },
+  "keywords": [
+    "markdown",
+    "reader",
+    "electron",
+    "react"
+  ],
+  "author": "FlowMark Team",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^20.10.0",
+    "@types/react": "^18.2.45",
+    "@types/react-dom": "^18.2.18",
+    "@testing-library/jest-dom": "^6.6.3",
+    "@testing-library/react": "^16.1.0",
+    "@testing-library/user-event": "^14.5.2",
+    "@vitejs/plugin-react": "^4.2.1",
+    "concurrently": "^8.2.2",
+    "electron": "^28.1.0",
+    "electron-builder": "^24.9.1",
+    "jsdom": "^25.0.1",
+    "typescript": "^5.3.3",
+    "vite": "^5.0.10",
+    "vitest": "^2.1.9",
+    "wait-on": "^7.2.0"
+  },
+  "dependencies": {
+    "@emotion/react": "^11.11.3",
+    "@emotion/styled": "^11.11.0",
+    "@mui/icons-material": "^5.15.2",
+    "@mui/material": "^5.15.2",
+    "buffer": "^6.0.3",
+    "gray-matter": "^4.0.3",
+    "highlight.js": "^11.9.0",
+    "katex": "^0.16.9",
+    "marked": "^11.1.0",
+    "marked-gfm-heading-id": "^3.1.3",
+    "marked-highlight": "^2.0.6",
+    "marked-katex-extension": "^5.0.6",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-router-dom": "^6.21.1"
+  },
+  "build": {
+    "appId": "com.flowmark.reader",
+    "productName": "FlowMark Reader",
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "dist/**/*",
+      "assets/**/*"
+    ],
+    "fileAssociations": [
+      {
+        "ext": "md",
+        "name": "Markdown",
+        "description": "Markdown Document",
+        "icon": "assets/icon.ico"
+      },
+      {
+        "ext": "markdown",
+        "name": "Markdown",
+        "description": "Markdown Document"
+      }
+    ],
+    "mac": {
+      "category": "public.app-category.productivity",
+      "fileAssociations": [
+        {
+          "ext": "md",
+          "name": "Markdown Document",
+          "icon": "assets/icon.icns"
+        }
+      ]
+    },
+    "win": {
+      "target": "nsis",
+      "fileAssociations": [
+        {
+          "ext": "md",
+          "name": "Markdown",
+          "description": "Markdown Document"
+        },
+        {
+          "ext": "markdown",
+          "name": "Markdown",
+          "description": "Markdown Document"
+        }
+      ]
+    },
+    "linux": {
+      "target": "AppImage",
+      "mimeTypes": [
+        "text/markdown"
+      ]
+    }
+  }
+}

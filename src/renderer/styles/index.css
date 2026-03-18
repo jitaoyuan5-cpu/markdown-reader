@@ -1,0 +1,92 @@
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  overflow: hidden;
+}
+
+#root {
+  height: 100%;
+}
+
+/* 滚动条样式 */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.3);
+}
+
+/* 选中文字样式 */
+::selection {
+  background-color: rgba(25, 118, 210, 0.3);
+}
+
+/* 拖拽区域 */
+.drag-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(25, 118, 210, 0.1);
+  border: 3px dashed #1976d2;
+  pointer-events: none;
+  z-index: 9999;
+  display: none;
+}
+
+.drag-overlay.active {
+  display: block;
+}
+
+/* 搜索高亮 */
+.search-highlight {
+  background-color: #ffeb3b !important;
+  color: #000 !important;
+  border-radius: 2px;
+  padding: 0 2px;
+}
+
+/* 图片灯箱 */
+.image-lightbox {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+  cursor: zoom-out;
+}
+
+.image-lightbox img {
+  max-width: 90%;
+  max-height: 90%;
+  object-fit: contain;
+}
+
+/* 打印样式 */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+}

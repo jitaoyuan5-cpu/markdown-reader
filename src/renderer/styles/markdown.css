@@ -1,0 +1,581 @@
+/* ============================================
+   FlowMark Reader - 流动墨韵 Markdown 样式
+   Fluid Ink Markdown Styles
+   ============================================ */
+
+/* 基础样式 */
+.markdown-body {
+  font-family: var(--font-body), 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  font-size: var(--text-base);
+  line-height: var(--leading-normal);
+  color: var(--ink-primary);
+  max-width: var(--content-max-width);
+  margin: 0 auto;
+}
+
+/* 墨迹渲染动画 */
+.markdown-body > * {
+  animation: ink-fade-in var(--duration-slow) var(--ease-flow) forwards;
+  opacity: 0;
+}
+
+.markdown-body > *:nth-child(1) { animation-delay: 0ms; }
+.markdown-body > *:nth-child(2) { animation-delay: 50ms; }
+.markdown-body > *:nth-child(3) { animation-delay: 100ms; }
+.markdown-body > *:nth-child(4) { animation-delay: 150ms; }
+.markdown-body > *:nth-child(5) { animation-delay: 200ms; }
+.markdown-body > *:nth-child(6) { animation-delay: 250ms; }
+.markdown-body > *:nth-child(7) { animation-delay: 300ms; }
+.markdown-body > *:nth-child(8) { animation-delay: 350ms; }
+.markdown-body > *:nth-child(9) { animation-delay: 400ms; }
+.markdown-body > *:nth-child(10) { animation-delay: 450ms; }
+.markdown-body > *:nth-child(n+11) { animation-delay: 500ms; }
+
+/* 标题样式 - 使用霞鹜文楷 */
+.markdown-body h1,
+.markdown-body h2,
+.markdown-body h3,
+.markdown-body h4,
+.markdown-body h5,
+.markdown-body h6 {
+  font-family: var(--font-display), 'STKaiti', 'KaiTi', serif;
+  font-weight: 600;
+  line-height: var(--leading-tight);
+  margin-top: var(--space-8);
+  margin-bottom: var(--space-4);
+  color: var(--ink-primary);
+  scroll-margin-top: 100px;
+  position: relative;
+}
+
+.markdown-body h1 {
+  font-size: var(--text-4xl);
+  padding-bottom: var(--space-4);
+  margin-bottom: var(--space-6);
+  border-bottom: 2px solid var(--paper-border);
+}
+
+.markdown-body h1::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 80px;
+  height: 2px;
+  background: var(--accent-primary);
+}
+
+.markdown-body h2 {
+  font-size: var(--text-3xl);
+  padding-bottom: var(--space-3);
+  border-bottom: 1px solid var(--paper-border);
+}
+
+.markdown-body h3 {
+  font-size: var(--text-2xl);
+}
+
+.markdown-body h4 {
+  font-size: var(--text-xl);
+}
+
+.markdown-body h5 {
+  font-size: var(--text-lg);
+}
+
+.markdown-body h6 {
+  font-size: var(--text-base);
+  color: var(--ink-tertiary);
+}
+
+/* 段落 */
+.markdown-body p {
+  margin-top: 0;
+  margin-bottom: var(--space-5);
+  text-align: justify;
+  hyphens: auto;
+}
+
+/* 首字下沉效果 - 仅在首段落 */
+.markdown-body > p:first-of-type::first-letter {
+  font-family: var(--font-display), 'STKaiti', serif;
+  font-size: 3em;
+  float: left;
+  line-height: 1;
+  padding-right: var(--space-2);
+  color: var(--accent-primary);
+}
+
+/* 链接样式 */
+.markdown-body a {
+  color: var(--accent-link);
+  text-decoration: none;
+  border-bottom: 1px dashed var(--accent-link);
+  transition: all 0.2s var(--ease-flow);
+  padding-bottom: 1px;
+}
+
+.markdown-body a:hover {
+  color: var(--accent-link-hover);
+  border-bottom-style: solid;
+  background: var(--hover-bg);
+}
+
+/* 列表样式 */
+.markdown-body ul,
+.markdown-body ol {
+  margin-top: 0;
+  margin-bottom: var(--space-5);
+  padding-left: 2em;
+}
+
+.markdown-body li {
+  margin-bottom: var(--space-2);
+}
+
+.markdown-body li > p {
+  margin-bottom: 0;
+}
+
+.markdown-body ul ul,
+.markdown-body ul ol,
+.markdown-body ol ol,
+.markdown-body ol ul {
+  margin-top: var(--space-2);
+  margin-bottom: var(--space-2);
+}
+
+/* 无序列表 - 自定义标记 */
+.markdown-body ul {
+  list-style: none;
+  padding-left: 1.5em;
+}
+
+.markdown-body ul > li {
+  position: relative;
+}
+
+.markdown-body ul > li::before {
+  content: '';
+  position: absolute;
+  left: -1.2em;
+  top: 0.6em;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent-primary);
+  opacity: 0.7;
+}
+
+.markdown-body ul ul > li::before {
+  background: var(--ink-tertiary);
+}
+
+/* 有序列表 */
+.markdown-body ol {
+  counter-reset: item;
+  list-style: none;
+  padding-left: 1.5em;
+}
+
+.markdown-body ol > li {
+  position: relative;
+  counter-increment: item;
+}
+
+.markdown-body ol > li::before {
+  content: counter(item) '.';
+  position: absolute;
+  left: -1.5em;
+  color: var(--accent-primary);
+  font-weight: 500;
+  font-family: var(--font-display), serif;
+}
+
+/* 任务列表 */
+.markdown-body .task-list-item {
+  list-style-type: none;
+}
+
+.markdown-body .task-list-item input[type="checkbox"] {
+  margin-right: 0.5em;
+  accent-color: var(--accent-primary);
+}
+
+/* 代码块样式 - 水墨风格 */
+.code-block-wrapper {
+  margin: var(--space-5) 0;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  border: 1px solid var(--paper-border);
+  box-shadow: 0 4px 16px var(--shadow-color);
+}
+
+.code-block-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--space-3) var(--space-4);
+  background: var(--paper-surface);
+  border-bottom: 1px solid var(--paper-border);
+}
+
+.code-language {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  color: var(--ink-tertiary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.copy-code-btn {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: var(--space-1) var(--space-2);
+  font-family: var(--font-body);
+  font-size: var(--text-xs);
+  color: var(--ink-tertiary);
+  background: transparent;
+  border: 1px solid var(--paper-border);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all 0.2s var(--ease-flow);
+}
+
+.copy-code-btn:hover {
+  background: var(--hover-bg);
+  color: var(--ink-primary);
+  border-color: var(--ink-tertiary);
+}
+
+.markdown-body pre {
+  margin: 0;
+  padding: var(--space-4);
+  overflow: auto;
+  font-family: var(--font-mono);
+  font-size: 0.9em;
+  line-height: 1.7;
+  background: var(--paper-bg);
+  border-radius: 0;
+}
+
+.markdown-body pre code {
+  display: inline-block;
+  min-width: 100%;
+  background: transparent;
+  padding: 0;
+  border-radius: 0;
+}
+
+/* 行内代码 */
+.markdown-body code {
+  font-family: var(--font-mono);
+  font-size: 0.85em;
+  padding: 0.2em 0.4em;
+  background: var(--paper-surface);
+  border-radius: var(--radius-sm);
+  color: var(--accent-primary);
+}
+
+.markdown-body pre code {
+  padding: 0;
+  background: transparent;
+  color: inherit;
+}
+
+/* 引用块 - 传统引文风格 */
+.markdown-body blockquote {
+  margin: var(--space-5) 0;
+  padding: var(--space-4) var(--space-5);
+  color: var(--ink-secondary);
+  background: var(--paper-surface);
+  border-left: 4px solid var(--accent-primary);
+  border-radius: 0 var(--radius-md) var(--radius-md) 0;
+  font-style: italic;
+  position: relative;
+}
+
+.markdown-body blockquote::before {
+  content: '"';
+  position: absolute;
+  top: var(--space-2);
+  left: var(--space-3);
+  font-family: var(--font-display), serif;
+  font-size: 3em;
+  color: var(--accent-primary);
+  opacity: 0.2;
+  line-height: 1;
+}
+
+.markdown-body blockquote > :first-child {
+  margin-top: 0;
+  padding-left: var(--space-4);
+}
+
+.markdown-body blockquote > :last-child {
+  margin-bottom: 0;
+}
+
+/* 表格样式 */
+.table-wrapper {
+  overflow-x: auto;
+  margin: var(--space-5) 0;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--paper-border);
+}
+
+.markdown-body table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.95em;
+}
+
+.markdown-body table th,
+.markdown-body table td {
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--paper-border);
+  text-align: left;
+}
+
+.markdown-body table th {
+  font-family: var(--font-display), serif;
+  font-weight: 600;
+  background: var(--paper-surface);
+  color: var(--ink-primary);
+}
+
+.markdown-body table tr:nth-child(2n) {
+  background: var(--paper-surface);
+}
+
+.markdown-body table tr:hover {
+  background: var(--hover-bg);
+}
+
+/* 图片样式 */
+.markdown-body img {
+  max-width: 100%;
+  height: auto;
+  border-radius: var(--radius-md);
+  box-shadow: 0 4px 16px var(--shadow-color);
+}
+
+.image-wrapper {
+  margin: var(--space-5) 0;
+  text-align: center;
+}
+
+.image-wrapper img {
+  cursor: zoom-in;
+  transition: transform 0.3s var(--ease-flow);
+}
+
+.image-wrapper img:hover {
+  transform: scale(1.02);
+}
+
+.image-wrapper figcaption {
+  margin-top: var(--space-3);
+  font-size: var(--text-sm);
+  color: var(--ink-tertiary);
+  font-style: italic;
+}
+
+/* 分割线 - 传统云纹风格 */
+.markdown-body hr {
+  margin: var(--space-8) 0;
+  padding: 0;
+  height: 1px;
+  background: transparent;
+  border: none;
+  position: relative;
+  text-align: center;
+}
+
+.markdown-body hr::before {
+  content: '◆';
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  color: var(--ink-tertiary);
+  font-size: 0.6em;
+  background: var(--paper-elevated);
+  padding: 0 var(--space-3);
+}
+
+.markdown-body hr::after {
+  content: '';
+  position: absolute;
+  left: 20%;
+  right: 20%;
+  top: 50%;
+  height: 1px;
+  background: linear-gradient(
+    to right,
+    transparent,
+    var(--paper-border),
+    var(--paper-border),
+    transparent
+  );
+  z-index: -1;
+}
+
+/* 强调样式 */
+.markdown-body strong {
+  font-weight: 600;
+  color: var(--ink-primary);
+}
+
+.markdown-body em {
+  font-style: italic;
+  color: var(--ink-secondary);
+}
+
+.markdown-body del {
+  text-decoration: line-through;
+  color: var(--ink-tertiary);
+  opacity: 0.8;
+}
+
+/* 搜索高亮 - 朱砂印记风格 */
+.search-highlight {
+  background: var(--highlight-bg) !important;
+  border-radius: 2px;
+  padding: 0 2px;
+  box-decoration-break: clone;
+}
+
+.fm-user-highlight {
+  background: var(--highlight-bg);
+  border-bottom: 2px solid var(--accent-primary);
+  border-radius: 2px;
+  padding: 0 2px;
+  box-decoration-break: clone;
+}
+
+/* 脚注样式 */
+.markdown-body .footnote-ref {
+  color: var(--accent-link);
+  font-size: 0.75em;
+  vertical-align: super;
+}
+
+.markdown-body .footnotes {
+  margin-top: var(--space-8);
+  padding-top: var(--space-5);
+  border-top: 1px solid var(--paper-border);
+  font-size: var(--text-sm);
+  color: var(--ink-secondary);
+}
+
+/* 定义列表 */
+.markdown-body dl {
+  margin: var(--space-5) 0;
+}
+
+.markdown-body dt {
+  font-weight: 600;
+  color: var(--ink-primary);
+  margin-top: var(--space-3);
+}
+
+.markdown-body dd {
+  margin-left: var(--space-5);
+  color: var(--ink-secondary);
+}
+
+/* ============================================
+   主题特定样式
+   ============================================ */
+
+/* 深色主题微调 */
+.markdown-dark {
+  color: var(--ink-primary);
+}
+
+.markdown-dark h1,
+.markdown-dark h2,
+.markdown-dark h3,
+.markdown-dark h4,
+.markdown-dark h5,
+.markdown-dark h6 {
+  color: var(--ink-primary);
+}
+
+.markdown-dark code {
+  background: var(--paper-elevated);
+}
+
+/* 护眼主题微调 */
+.markdown-sepia {
+  color: var(--ink-primary);
+}
+
+.markdown-sepia blockquote {
+  background: var(--paper-surface);
+}
+
+/* 纯黑 OLED 主题 */
+.markdown-midnight {
+  color: var(--ink-primary);
+}
+
+.markdown-midnight code {
+  background: var(--paper-elevated);
+}
+
+.markdown-midnight .code-block-wrapper {
+  border-color: var(--paper-border);
+}
+
+/* ============================================
+   响应式调整
+   ============================================ */
+
+@media (max-width: 768px) {
+  .markdown-body {
+    font-size: 15px;
+  }
+
+  .markdown-body h1 {
+    font-size: var(--text-3xl);
+  }
+
+  .markdown-body h2 {
+    font-size: var(--text-2xl);
+  }
+
+  .markdown-body h3 {
+    font-size: var(--text-xl);
+  }
+
+  .markdown-body pre {
+    padding: var(--space-3);
+    font-size: 0.85em;
+  }
+
+  .markdown-body blockquote {
+    padding: var(--space-3);
+    margin: var(--space-4) 0;
+  }
+}
+
+/* 打印样式 */
+@media print {
+  .markdown-body {
+    color: #000;
+    background: #fff;
+  }
+
+  .markdown-body pre,
+  .markdown-body code {
+    background: #f5f5f5 !important;
+  }
+
+  .markdown-body a {
+    color: #000;
+    text-decoration: underline;
+  }
+}
